@@ -133,6 +133,12 @@ const SP5R2_PULL: sys_api::Pull = sys_api::Pull::None;
 const SP5R3_PULL: sys_api::Pull = sys_api::Pull::None;
 const SP5R4_PULL: sys_api::Pull = sys_api::Pull::None;
 
+const FPGA_TO_SP_IRQ1: sys_api::PinSet = sys_api::Port::F.pin(5);
+ const FPGA_TO_SP_IRQ2: sys_api::PinSet = sys_api::Port::F.pin(12);
+ const FPGA_TO_SP_IRQ3: sys_api::PinSet = sys_api::Port::F.pin(13);
+ const FPGA_TO_SP_IRQ4: sys_api::PinSet = sys_api::Port::G.pin(3);
+
+
 ////////////////////////////////////////////////////////////////////////////////
 
 /// Helper type which includes both sequencer and NIC state machine states
@@ -222,6 +228,13 @@ fn init() -> Result<ServerImpl, SeqError> {
     sys.gpio_configure_input(SP5_TO_SP_SP5R2, SP5R2_PULL);
     sys.gpio_configure_input(SP5_TO_SP_SP5R3, SP5R3_PULL);
     sys.gpio_configure_input(SP5_TO_SP_SP5R4, SP5R4_PULL);
+
+
+     sys.gpio_configure_input(FPGA_TO_SP_IRQ1, sys_api::Pull::None);
+     sys.gpio_configure_input(FPGA_TO_SP_IRQ2, sys_api::Pull::None);
+     sys.gpio_configure_input(FPGA_TO_SP_IRQ3, sys_api::Pull::None);
+     sys.gpio_configure_input(FPGA_TO_SP_IRQ4, sys_api::Pull::None);
+
 
     let spi_front = drv_spi_api::Spi::from(SPI_FRONT.get_task_id());
     let aux = drv_auxflash_api::AuxFlash::from(AUXFLASH.get_task_id());
