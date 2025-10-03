@@ -1,0 +1,60 @@
+name: Test SP/RoT Artifacts
+on:
+  pull_request:
+    # PR-only triggers for security - prevents accidental expensive builds
+    # Remove push triggers initially to ensure controlled testing
+
+jobs:
+  build-grapefruit:
+    name: build-grapefruit-standalone
+    runs-on: ubuntu-latest
+    env:
+      VCPKGRS_DYNAMIC: 1
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        run: |
+          rustup show active-toolchain || rustup toolchain install
+          rustup show
+
+      - name: Cache build output
+        uses: Swatinem/rust-cache@v2
+
+      - name: Build grapefruit-standalone
+        env:
+          RUST_BACKTRACE: 1
+        run: cargo xtask dist app/grapefruit/app-dev.toml
+
+      - name: Upload grapefruit artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-ubuntu-latest-grapefruit-standalone
+          path: target/grapefruit-standalone/dist/build-grapefruit-standalone-image-*.zip
+
+  build-rot:
+    name: build-oxide-rot-1-selfsigned
+    runs-on: ubuntu-latest
+    env:
+      VCPKGRS_DYNAMIC: 1
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        run: |
+          rustup show active-toolchain || rustup toolchain install
+          rustup show
+
+      - name: Cache build output
+        uses: Swatinem/rust-cache@v2
+
+      - name: Build oxide-rot-1-selfsigned
+        env:
+          RUST_BACKTRACE: 1
+        run: cargo xtask dist app/oxide-rot-1/app-dev.toml
+
+      - name: Upload RoT artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-ubuntu-latest-oxide-rot-1-selfsigned
+          path: target/oxide-rot-1-selfsigned/dist/build-oxide-rot-1-selfsigned-image-*.zip
