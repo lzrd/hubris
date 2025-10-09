@@ -26,11 +26,15 @@ jobs:
           RUST_BACKTRACE: 1
         run: cargo xtask dist app/grapefruit/app-dev.toml
 
+      - name: Get archive path
+        id: get-archive
+        run: echo "archive=$(cargo -q xtask print --archive app/grapefruit/app-dev.toml)" >> $GITHUB_OUTPUT
+
       - name: Upload grapefruit artifact
         uses: actions/upload-artifact@v4
         with:
           name: dist-ubuntu-latest-grapefruit-standalone
-          path: target/grapefruit-standalone/dist/build-grapefruit-standalone-image-*.zip
+          path: ${{ steps.get-archive.outputs.archive }}
 
   build-rot:
     name: build-oxide-rot-1-selfsigned
@@ -53,8 +57,16 @@ jobs:
           RUST_BACKTRACE: 1
         run: cargo xtask dist app/oxide-rot-1/app-dev.toml
 
-      - name: Upload RoT artifact
+      - name: Get archive paths
+        id: get-archives
+        run: |
+          echo "archive_a=$(cargo -q xtask print --archive --image-name a app/oxide-rot-1/app-dev.toml)" >> $GITHUB_OUTPUT
+          echo "archive_b=$(cargo -q xtask print --archive --image-name b app/oxide-rot-1/app-dev.toml)" >> $GITHUB_OUTPUT
+
+      - name: Upload RoT artifacts
         uses: actions/upload-artifact@v4
         with:
           name: dist-ubuntu-latest-oxide-rot-1-selfsigned
-          path: target/oxide-rot-1-selfsigned/dist/build-oxide-rot-1-selfsigned-image-*.zip
+          path: |
+            ${{ steps.get-archives.outputs.archive_a }}
+            ${{ steps.get-archives.outputs.archive_b }}
