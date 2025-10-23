@@ -27,7 +27,7 @@ name = "drv-stm32h7-rng"
 priority = 6
 uses = ["rng"]
 start = true
-stacksize = 512
+stacksize = 1024
 task-slots = ["sys", "packrat"]
 
 # Demo/test task for ereports
