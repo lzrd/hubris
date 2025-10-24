@@ -27,7 +27,8 @@ name = "task-jefe"
 priority = 0
 max-sizes = {flash = 8192, ram = 2048}
 start = true
-stacksize = 1536
+# stacksize = 1536
+stacksize = 2048
 notifications = ["fault", "timer"]
 
 [tasks.jefe.config.allowed-callers]
